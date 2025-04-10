@@ -19,7 +19,8 @@ RepeatMasker -xsmall -pa 24 -lib ./CAVEDB/consensi.fa.classified -dir CAVEDB_mas
 2) 2_Sort_genomes.sh
 Reorder your scaffolds from longest to shortest, and replace their headers with streamlined, standardized FASTA identifiers to minimize potential complications in later analysis steps
 
-3) BUSCO to get genome stats
+3) 3_runBUSCO.sh
+To assess genome completeness and generate summary statistics using BUSCO
 
    
 5) 4_Funannotate_predict.sh
