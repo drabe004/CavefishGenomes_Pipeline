@@ -3,9 +3,8 @@
 #SBATCH --ntasks=4
 #SBATCH --mem=50g
 #SBATCH --tmp=50g
-#SBATCH -p cavefish
 #SBATCH --mail-type=ALL  
-#SBATCH --mail-user=drabe004@umn.edu
+#SBATCH --mail-user=youremail
 
 
 
@@ -14,7 +13,7 @@ module load recon/1.08
 module load repeatmasker/4.0.5
 module load repeatmodeler
 
-cd /panfs/roc/groups/14/mcgaughs/drabe004/NewGenomes/MBRI
+cd /path/to/your/genomes
 
 #Step 1: Build a database for the genome (in the example below the genome fasta file is PfluvDB GCA_010015445.1_GENO_Pfluv_1.0_genomic.fa and I chose the prefix PfluvDB for the database files)
 #BuildDatabase -name MBRIDB MBRI_genome.fasta
