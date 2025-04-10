@@ -4,7 +4,7 @@ A set of scripts for processing of 10x Genomics long-read genome assemblies for 
 
  mask –> sort  –> predict –> annotate –> rename –> remove transcript varients –> Orthofinder
 
-1) Mask Assemblies with RepeatMasker:
+1) Mask Assemblies with RepeatMasker, use Repeatmodeler to make a custom database:
 
 #Step 1: Build a database for the genome (in the example below the genome fasta file is CAVEgenome.fa and I chose the prefix CAVEDB for the database files)
 BuildDatabase -name CAVEDB CAVEgenome.fa
