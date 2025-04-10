@@ -128,7 +128,6 @@ This pipeline is optimized for high-quality assemblies from non-model organisms 
 Dr. Danielle H. Drabeck  
 Researcher 5, University of Minnesota  
 Website: https://www.danielledrabeck.com  
-Twitter: [@DanielleDrabeck](https://twitter.com/DanielleDrabeck)
 
 ---
 
