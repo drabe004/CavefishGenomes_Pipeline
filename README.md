@@ -112,6 +112,26 @@ Filter gene models to retain only the primary transcript per gene, reducing redu
 
 ---
 
+## 7) Run Orthofinder to group proteins into orthogroups — `orthofinder` [orthofinder/2.5.4]
+
+**Purpose:**  
+Identify orthogroups and infer gene and species trees from protein sequences across multiple species.
+
+**Input:**  
+- Protein FASTA files (FAA) from each species, filtered to include only primary transcripts.  
+- A rooted species tree in Newick format.
+
+**Output:**  
+- Orthogroup assignments  
+- Gene trees for each orthogroup  
+- Rooted species tree  
+- Ortholog and paralog relationships  
+- Summary statistics and comparative genomics outputs
+
+**Description:**  
+This step uses OrthoFinder with MSA-based alignment and FastTree to assign proteins to orthogroups and infer gene and species trees. It enables downstream comparative analyses of gene family evolution, duplication events, and orthologous relationships. See https://davidemms.github.io/ for details. 
+---
+
 ## Output Summary
 
 At the conclusion of the pipeline, the following key outputs will be available for each genome:
@@ -151,12 +171,21 @@ Website: https://www.danielledrabeck.com
 
 If you use this pipeline or any of its components, please cite the following tools:
 
+## Repeat Modeler / Repeat Masker
 - Flynn, J. M., et al. (2020). RepeatModeler2 for automated genomic discovery of transposable element families. *PNAS*, 117(17), 9451–9457. https://doi.org/10.1073/pnas.1921046117  
-- Smit, A.F.A., Hubley, R., & Green, P. RepeatMasker Open-4.0. http://www.repeatmasker.org  
+- Smit, A.F.A., Hubley, R., & Green, P. RepeatMasker Open-4.0. http://www.repeatmasker.org
+- 
+## Funannotate
 - Palmer, J. M., & Stajich, J. E. (2020). Funannotate v1.8: Eukaryotic genome annotation. *Zenodo*. https://doi.org/10.5281/zenodo.2604804  
 - Seppey, M., et al. (2019). BUSCO: Assessing genome assembly and annotation completeness. In *Gene Prediction*, Springer. https://doi.org/10.1007/978-1-4939-9173-0_14  
 - Jones, P., et al. (2014). InterProScan 5: Genome-scale protein function classification. *Bioinformatics*, 30(9), 1236–1240. https://doi.org/10.1093/bioinformatics/btu031  
-- Cantalapiedra, C. P., et al. (2021). eggNOG-mapper v2: Functional annotation, orthology assignments, and domain prediction at the metagenomic scale. *Mol. Biol. Evol.*, 38(12), 5825–5829. https://doi.org/10.1093/molbev/msab293
+- Cantalapiedra, C. P., et al. (2021). eggNOG-mapper v2: Functional annotation, orthology assignments, and domain prediction at the metagenomic scale. *Mol. Biol. Evol.*, 38(12), 5825–5829.https://doi.org/10.1093/molbev/msab293
+
+## ORTHOFINDER
+- Emms D.M. & Kelly S. STRIDE: Species Tree Root Inference from Gene Duplication Events (2017), Mol Biol Evol 34(12): 3267-3278
+- Emms D.M. & Kelly S. STAG: Species Tree Inference from All Genes (2018), bioRxiv https://doi.org/10.1101/267914
+
+ 
 
 ---
 
