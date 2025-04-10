@@ -96,7 +96,7 @@ This step integrates multiple databases to assign biological function to predict
 
 ---
 
-## 6) Remove transcript variants — `Run_Primary_Transcript` 'primary_transcript.py' from https://github.com/davidemms/OrthoFinder/blob/master/tools/primary_transcript.py
+## 6) Remove transcript variants — `6_Run_Primary_Transcript` 'primary_transcript.py' from https://github.com/davidemms/OrthoFinder/blob/master/tools/primary_transcript.py
 
 **Purpose:**  
 Filter gene models to retain only the primary transcript per gene, reducing redundancy in downstream functional annotation and orthology analysis.
@@ -112,7 +112,7 @@ Filter gene models to retain only the primary transcript per gene, reducing redu
 
 ---
 
-## 7) Run Orthofinder to group proteins into orthogroups — `orthofinder` [orthofinder/2.5.4]
+## 7) Run Orthofinder to group proteins into orthogroups — `7_Runorthofinder_msa.sh` [orthofinder/2.5.4]
 
 **Purpose:**  
 Identify orthogroups and infer gene and species trees from protein sequences across multiple species.
