@@ -20,3 +20,4 @@ python
 for f in *fa ; do python path/to/primary_transcript.py $f ; done
 
 #output makes a folder of Primary Transcripts "primary_transcripts"
+#combine output from Funannotate for new genomes "Genome1.proteins.fa" 
