@@ -1,125 +1,148 @@
-# 🐟 CavefishGenomes_Pipeline
+# CavefishGenomes_Pipeline
 
-**A streamlined pipeline for processing 10x Genomics long-read genome assemblies for OrthoFinder input.**  
-Developed for genome annotation and comparative analysis in non-model species, particularly cavefish.
+A streamlined pipeline for processing 10x Genomics long-read genome assemblies in preparation for orthology analysis using OrthoFinder.
 
-This pipeline takes assembled genomes through a series of preprocessing, annotation, and formatting steps to produce high-quality gene models compatible with orthology inference using OrthoFinder.
-
-**Workflow:**  
-*Repeat masking → scaffold sorting → genome completeness check → gene prediction → functional annotation → transcript variant cleanup → OrthoFinder-ready output*
+The pipeline includes a set of modular scripts to guide genome assemblies through masking, sorting, gene prediction, and annotation, resulting in high-quality, standardized outputs for comparative genomic analyses.
 
 ---
 
-## 📁 Pipeline Steps
+## Pipeline Overview
 
-### 1) Repeat Masking — `1_RepeatMasker.sh`
-**Goal:** Mask repetitive elements using a custom repeat library.  
-**Tools:** RepeatModeler, RepeatMasker (v4.0.5)
-Step 1: Build a RepeatModeler database from your genome
-Step 2: Generate a custom repeat library
-Step 3: Mask repeats in the genome (softmasked output)
+**Workflow:**  
+Repeat masking → scaffold sorting → genome completeness check → gene prediction → functional annotation → transcript variant filtering → OrthoFinder input formatting
 
-2) Scaffold Sorting — 2_Sort_genomes.sh
-Goal: Sort scaffolds by length and assign simplified FASTA headers to avoid downstream parsing issues.
-Tool: funannotate sort
+---
 
-bash
-Copy
-Edit
-funannotate sort -i masked_genome.fa -o masked_genome_sorted.fasta -b GENOME1
-3) Genome Completeness — 3_runBUSCO.sh
-Goal: Assess genome completeness and summarize gene content using BUSCO.
-Tool: BUSCO
+## 1) Repeat Masking — `1_RepeatMasker.sh`
 
-Evaluates the completeness of gene content using single-copy orthologs from a specified lineage dataset (e.g., actinopterygii_odb10).
+**Purpose:**  
+Identify and mask repetitive elements in the genome using a custom repeat library to reduce annotation artifacts.
 
-4) Gene Prediction — 4_Funannotate_predict.sh
-Goal: Predict gene models using evidence-guided annotation.
-Tool: Funannotate Predict (v1.8.15)
+**Input:**  
+- Unmasked genome assembly in FASTA format.
 
-Run on the softmasked genome with:
+**Output:**  
+- Softmasked genome FASTA file with repetitive elements in lowercase.
 
-20 CPUs
+**Description:**  
+This script builds a species-specific repeat database using RepeatModeler, then applies RepeatMasker to generate a softmasked genome, preserving sequence length and structure while masking repetitive regions.
 
-Max intron length: 50,000 bp
+---
 
-BUSCO-trained Augustus models (e.g., using zebrafish as the seed species)
+## 2) Scaffold Sorting — `2_Sort_genomes.sh`
 
-bash
-Copy
-Edit
-funannotate predict -i masked_genome_sorted.fasta -o output_fun_CAVEgenome \
-  --species "Species name" --strain CAVE \
-  --cpus 20 --max_intronlen 50000 \
-  --busco_seed_species zebrafish
-5) Functional Annotation — 5_Funannotate_annotate.sh
-Goal: Add functional annotation to predicted gene models.
-Tool: Funannotate Annotate (v1.8.15)
+**Purpose:**  
+Reorder scaffolds by descending length and standardize FASTA headers to ensure compatibility with downstream tools.
 
-Integrates annotations from:
+**Input:**  
+- Softmasked genome FASTA file from Step 1.
 
-InterProScan for domain and GO term annotation
+**Output:**  
+- Sorted and renamed genome FASTA file.
 
-EggNOG-mapper for orthology and functional prediction
+**Description:**  
+Scaffolds are sorted from longest to shortest, and each is renamed with a simplified identifier (e.g., GENOME1_1, GENOME1_2, etc.). This avoids parsing issues in tools that require clean or consistent headers.
 
-bash
-Copy
-Edit
-funannotate annotate -i output_fun_CAVEgenome --cpus 20
-🧬 Output Summary
-By the end of the pipeline, you will have:
+---
 
-A softmasked genome FASTA file
+## 3) Genome Completeness Assessment — `3_runBUSCO.sh`
 
-A BUSCO summary report (completeness metrics)
+**Purpose:**  
+Assess the completeness of the genome assembly using Benchmarking Universal Single-Copy Orthologs (BUSCO).
 
-Predicted gene models in GFF3, FAA, and FNA formats
+**Input:**  
+- Sorted and masked genome FASTA file from Step 2.
 
-Functional annotation files
+**Output:**  
+- BUSCO summary report and lineage-specific completeness metrics.
 
-A cleaned gene set prepared for input into OrthoFinder
+**Description:**  
+BUSCO is run against an appropriate lineage dataset (e.g., actinopterygii_odb10) to evaluate the presence, absence, and fragmentation of conserved orthologs, providing a quality check for annotation readiness.
 
-🔧 Requirements
-Ensure the following tools are installed and configured in your environment:
+---
 
-RepeatModeler
+## 4) Gene Prediction — `4_Funannotate_predict.sh`
 
-RepeatMasker
+**Purpose:**  
+Generate gene models using evidence-based prediction with optimized parameters for non-model organisms.
 
-Funannotate (v1.8.15)
+**Input:**  
+- Masked and sorted genome FASTA file.  
+- BUSCO training results (optional but recommended).  
 
-BUSCO
+**Output:**  
+- Predicted gene models in GFF3, FAA (proteins), and FNA (transcripts) formats.  
+- Log files and summary statistics.
 
-InterProScan
+**Description:**  
+Funannotate Predict uses ab initio prediction methods (including Augustus), trained with BUSCO data, to annotate gene structures across the genome. Parameters such as maximum intron length and BUSCO seed species can be adjusted for taxon-specific optimization.
 
-EggNOG-mapper
+---
 
-📌 Notes
-Scripts are modular and can be run independently or integrated into a larger pipeline framework.
+## 5) Functional Annotation — `5_Funannotate_annotate.sh`
 
-Adjust CPU settings (-pa, --cpus) to suit your computational environment.
+**Purpose:**  
+Assign gene functions using InterProScan and EggNOG-mapper annotations.
 
-Originally developed for use with cavefish genomes but is adaptable to other non-model vertebrates.
+**Input:**  
+- Gene predictions from Step 4.  
+- Protein sequences (FAA) and corresponding GFF3 annotations.
 
-👩‍🔬 Author
-Dr. Danielle H. Drabeck
-Researcher 5, University of Minnesota
-https://www.danielledrabeck.com
-Twitter: @DanielleDrabeck
+**Output:**  
+- Functional annotation reports, domain predictions, GO terms, and orthology mappings.
 
-📚 Citations
-If you use this pipeline or any of its components in your research, please cite the relevant tools:
+**Description:**  
+This step integrates multiple databases to assign biological function to predicted genes. InterProScan provides domain-based annotation, while EggNOG-mapper assigns orthology and pathway-level information for comparative genomics.
 
-Flynn, J. M., Hubley, R., Goubert, C., Rosen, J., Clark, A. G., Feschotte, C., & Smit, A. F. (2020). RepeatModeler2 for automated genomic discovery of transposable element families. PNAS, 117(17), 9451–9457. https://doi.org/10.1073/pnas.1921046117
+---
 
-Smit, A.F.A., Hubley, R. & Green, P. RepeatMasker Open-4.0. 2013–2015. http://www.repeatmasker.org
+## Output Summary
 
-Palmer, J. M., & Stajich, J. E. (2020). Funannotate v1.8: Eukaryotic genome annotation. Zenodo. https://doi.org/10.5281/zenodo.2604804
+At the conclusion of the pipeline, the following key outputs will be available for each genome:
 
-Seppey, M., Manni, M., & Zdobnov, E. M. (2019). BUSCO: Assessing genome assembly and annotation completeness. In Gene Prediction (pp. 227–245). Springer. https://doi.org/10.1007/978-1-4939-9173-0_14
+- Softmasked and scaffold-sorted genome FASTA  
+- BUSCO completeness reports  
+- Annotated gene models (GFF3, FAA, FNA)  
+- Functional annotations (GO terms, domains, orthologs)  
+- Cleaned gene sets ready for OrthoFinder input  
 
-Jones, P., et al. (2014). InterProScan 5: Genome-scale protein function classification. Bioinformatics, 30(9), 1236–1240. https://doi.org/10.1093/bioinformatics/btu031
+---
 
-Cantalapiedra, C. P., et al. (2021). eggNOG-mapper v2: Functional annotation, orthology assignments, and domain prediction at the metagenomic scale. Molecular Biology and Evolution, 38(12), 5825–5829. https://doi.org/10.1093/molbev/msab293
+## Requirements
 
-For questions, contributions, or issues, please open an issue in the GitHub repository or contact the author directly.
+Ensure the following tools are installed and properly configured:
+
+- RepeatModeler  
+- RepeatMasker  
+- Funannotate (v1.8.15)  
+- BUSCO  
+- InterProScan  
+- EggNOG-mapper  
+
+This pipeline is optimized for high-quality assemblies from non-model organisms and was developed using cavefish genomes as a test case.
+
+---
+
+## Author
+
+Dr. Danielle H. Drabeck  
+Researcher 5, University of Minnesota  
+Website: https://www.danielledrabeck.com  
+Twitter: [@DanielleDrabeck](https://twitter.com/DanielleDrabeck)
+
+---
+
+## Citations
+
+If you use this pipeline or any of its components, please cite the following tools:
+
+- Flynn, J. M., et al. (2020). RepeatModeler2 for automated genomic discovery of transposable element families. *PNAS*, 117(17), 9451–9457. https://doi.org/10.1073/pnas.1921046117  
+- Smit, A.F.A., Hubley, R., & Green, P. RepeatMasker Open-4.0. http://www.repeatmasker.org  
+- Palmer, J. M., & Stajich, J. E. (2020). Funannotate v1.8: Eukaryotic genome annotation. *Zenodo*. https://doi.org/10.5281/zenodo.2604804  
+- Seppey, M., et al. (2019). BUSCO: Assessing genome assembly and annotation completeness. In *Gene Prediction*, Springer. https://doi.org/10.1007/978-1-4939-9173-0_14  
+- Jones, P., et al. (2014). InterProScan 5: Genome-scale protein function classification. *Bioinformatics*, 30(9), 1236–1240. https://doi.org/10.1093/bioinformatics/btu031  
+- Cantalapiedra, C. P., et al. (2021). eggNOG-mapper v2: Functional annotation, orthology assignments, and domain prediction at the metagenomic scale. *Mol. Biol. Evol.*, 38(12), 5825–5829. https://doi.org/10.1093/molbev/msab293
+
+---
+
+For support, questions, or contributions, please open an issue in the GitHub repository.
