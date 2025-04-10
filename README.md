@@ -96,6 +96,22 @@ This step integrates multiple databases to assign biological function to predict
 
 ---
 
+## 6) Remove transcript variants — `Run_Primary_Transcript` 'primary_transcript.py' from https://github.com/davidemms/OrthoFinder/blob/master/tools/primary_transcript.py
+
+**Purpose:**  
+Filter gene models to retain only the primary transcript per gene, reducing redundancy in downstream functional annotation and orthology analysis.
+
+**Input:**  
+- protein FASTA file annotated (FAA)
+
+**Output:**  
+- Functional annotation reports, domain predictions, GO terms, and orthology mappings.
+
+**Description:**  
+- FAA files containing only the longest (or first) transcript per gene 
+
+---
+
 ## Output Summary
 
 At the conclusion of the pipeline, the following key outputs will be available for each genome:
